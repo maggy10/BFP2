@@ -15,7 +15,7 @@ st.set_page_config(
     layout="centered")
 
 
-st.image("Logo2.png", use_container_width=True)
+st.image("logo3.png", use_container_width=True)
 
 
 st.title("Balance Financiero Proyectado")
