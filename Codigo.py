@@ -32,21 +32,20 @@ boton = st.button('Genera el BFP')
 
 # 1. Cargar archivo
 if archivo is not None:
-    st.info("Cargando archivo pesado... Esto puede tomar un momento.")
-    try:
-        # Cargar los datos desde el archivo subido
-        df = cargar_datos(archivo)
+      st.info("Cargando archivo pesado... Esto puede tomar un momento.")
+      try:
+          # Cargar los datos desde el archivo subido
+          df = cargar_datos(archivo)
         
-        # 'datos' ya es un DataFrame, no necesitas hacer df = pd.DataFrame(datos)
-        df_m = datos.head(5)
+          # 'datos' ya es un DataFrame, no necesitas hacer df = pd.DataFrame(datos)
+          df_m = datos.head(5)
         
-        st.success("¡Archivo cargado con éxito!")
-        st.write(df_m)
-    except Exception as e:
-        st.error(f"Hubo un error al procesar el archivo: {e}")
+          st.success("¡Archivo cargado con éxito!")
+          st.write(df_m)
+      except Exception as e:
+          st.error(f"Hubo un error al procesar el archivo: {e}")
 
   #2 Correr codigo
-
       if boton is True:
 
           # Convertimos la columna a fechas reales
