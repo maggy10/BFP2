@@ -21,19 +21,29 @@ st.image("logo.png", use_container_width=True)
 st.title("Balance Financiero Proyectado")
 
 # 1. Cargar archivo
-    
+@st.cache_data
+def cargar_datos(archivo_subido):
+    # Usamos 'openpyxl' explícitamente como motor de lectura
+    return pd.read_excel(archivo_subido, sheet_name=0, engine='openpyxl')
+
+
 archivo = st.file_uploader("Sube tu archivo de Excel", type=["xlsx"])
 boton = st.button('Genera el BFP')
 
-def cargar_datos(archivo):
-    return pd.read_excel(archivo, sheet_name=0)
-    
+# 1. Cargar archivo
 if archivo is not None:
-      # Cargar los datos desde el archivo subido
-      datos = cargar_datos(archivo)
-      df = pd.DataFrame(datos)
-      df_m = df.head(5)
-      st.write(df_m)
+    st.info("Cargando archivo pesado... Esto puede tomar un momento.")
+    try:
+        # Cargar los datos desde el archivo subido
+        df = cargar_datos(archivo)
+        
+        # 'datos' ya es un DataFrame, no necesitas hacer df = pd.DataFrame(datos)
+        df_m = datos.head(5)
+        
+        st.success("¡Archivo cargado con éxito!")
+        st.write(df_m)
+    except Exception as e:
+        st.error(f"Hubo un error al procesar el archivo: {e}")
 
   #2 Correr codigo
 
