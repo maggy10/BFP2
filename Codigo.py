@@ -4,7 +4,11 @@ import numpy as np
 import io
 
 # Configuración de la página de Streamlit
-
+import os
+try:
+    import openpyxl
+except ImportError:
+    os.system('pip install openpyxl')
 
 st.set_page_config(
     page_title="Balance Financiero Proyectado",
