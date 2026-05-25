@@ -129,7 +129,7 @@ def balance(df):
     gpf2 = gpf2['IMPORTE'].sum()
 
     gpf3 = pd.DataFrame({'CAPITULO': [40000000], 'IMPORTE': [gpf2]})
-          gpf3.index.name = 'CAPITULO'
+    gpf3.index.name = 'CAPITULO'
 
     gpar = (pd.concat([gpp4, gpf3], axis=0))
 
