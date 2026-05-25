@@ -17,13 +17,16 @@ st.image("logo.png", use_container_width=True)
 st.title("Balance Financiero Proyectado")
 
 # 1. Cargar archivo
+    
 archivo = st.file_uploader("Sube tu archivo de Excel", type=["xlsx"])
 boton = st.button('Genera el BFP')
 
-
+def cargar_datos(archivo):
+    return pd.read_excel(archivo, sheet_name=0)
+    
 if archivo is not None:
       # Cargar los datos desde el archivo subido
-      datos = pd.read_excel(archivo, sheet_name=0)
+      datos = cargar_datos(archivo)
       df = pd.DataFrame(datos)
       df_m = df.head(5)
       st.write(df_m)
