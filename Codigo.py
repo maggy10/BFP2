@@ -3,15 +3,15 @@ import pandas as pd
 import numpy as np
 import io
 
-# 1. Configuración de la página de Streamlit (DEBE SER LO PRIMERO)
+# 1. Configuración de la página de Streamlit
 st.set_page_config(
     page_title="Balance Financiero Proyectado",
     layout="centered"
 )
 
-# Renderizar logo y título
+# Renderizar logo y título con el nuevo formato 2026
 try:
-    st.image("logo3.png", use_container_width=True)
+    st.image("logo3.png", width="stretch")
 except:
     pass
 
@@ -28,21 +28,19 @@ boton = st.button('Genera el BFP')
 
 # 4. Ejecución de la lógica
 if archivo is not None:
-    # Bloque de carga inicial
     try:
         df_original = cargar_datos(archivo)
         st.success("¡Archivo cargado con éxito en memoria!")
         st.write("Vista previa de los datos originales:")
-        st.dataframe(df_original.head(5))
+        st.dataframe(df_original.head(5), width="stretch")
     except Exception as e:
         st.error(f"Hubo un error al procesar el archivo: {e}")
-        st.stop() # Detiene la ejecución si el Excel no se puede leer
+        st.stop()
 
     # Si el usuario presiona el botón, procesamos toda la información financiera
     if boton:
-        with st.spinner("Procesando datos... Por favor espera."):
+        with st.spinner("Procesando datos y generando balances... Por favor espera."):
             try:
-                # Clonamos para no afectar la caché original
                 df = df_original.copy()
 
                 # Convertimos la columna a fechas reales
@@ -149,7 +147,7 @@ if archivo is not None:
                 g_tpf_maiz = pd.concat([gastom, gastom2], axis=0)
                 gasto_maiz = g_tpf_maiz.rename(columns={'CAPITULO': 'Capítulo', 'IMPORTE': 'Maíz es la Raíz'})
 
-                # --- CÁLCULO DE FUENTES ANTES DE FORMATEAR A TEXTO ---
+                # --- CÁLCULO DE FUENTES ANTES DE FORMATO ---
                 p = gpp4['IMPORTE'].sum() / 1000000 if not gpp4.empty else 0
                 tr = g_tp['IMPORTE'].sum() if not g_tp.empty else 0
                 ta = gasto_transversal['Gasto Transversal'].sum() if not gasto_transversal.empty else 0
@@ -197,7 +195,7 @@ if archivo is not None:
                     'Gasto Transversal': [ventas_bienes['Gasto Transversal'].sum(), productos_financieros['Gasto Transversal'].sum(), otros_ingresos['Gasto Transversal'].sum(), 0]
                 })
 
-                # --- ENSAMBLAJE DE RESULTADOS ---
+                # --- CONSOLIDACIÓN FINAL ---
                 columns_order = ['Acopio', 'PAR', 'Transformación', 'Maíz es la Raíz', 'Gasto Transversal']
                 
                 ig = pd.DataFrame({'Concepto': ['Ingresos'], 'Acopio': [''], 'PAR': [''], 'Transformación': [''], 'Maíz es la Raíz': [''], 'Gasto Transversal': ['']}).set_index('Concepto')
@@ -206,14 +204,12 @@ if archivo is not None:
                 ingresos_as_idx = ingresos.set_index('Concepto')
                 egeresos2 = egresos.drop('Capítulo', axis=1).set_index('Concepto')
 
-                # Mapeo a string con formato decimal seguro ANTES de concatenar para visualización
                 for col in columns_order:
                     ingresos_as_idx[col] = ingresos_as_idx[col].map('{:,.3f}'.format)
                     egeresos2[col] = egeresos2[col].map('{:,.3f}'.format)
 
                 resultado = pd.concat([ig, ingresos_as_idx, eg, egeresos2], axis=0)
 
-                # Construcción de Fuentes de Financiamiento
                 fuente = pd.DataFrame({
                     'Concepto': ['Fuente de Financiamiento', 'Propios', 'Fiscales'],
                     'Acopio': ['', '{:,.3f}'.format(a), '{:,.3f}'.format(af)],
@@ -223,15 +219,14 @@ if archivo is not None:
                     'Gasto Transversal': ['', '{:,.3f}'.format(ta), '0.000']
                 }).set_index('Concepto')
 
-                # Estructura Final Consolidadas
                 tabla = pd.concat([resultado, fuente], axis=0).reset_index()
                 tabla = tabla.rename(columns={'index': 'Concepto'})
 
-                # Despliegue en Streamlit
-                st.subheader("Balance Financiero Consolidado (Millones)")
-                st.dataframe(tabla, use_container_width=True)
+                # Despliegue en Streamlit usando width="stretch" para cumplir reglas 2026
+                st.subheader("📊 Balance Financiero Consolidado (Millones)")
+                st.dataframe(tabla, width="stretch")
 
-                # --- EXPORTAR EXCEL ---
+                # Exportación a Excel
                 buffer = io.BytesIO()
                 with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
                     tabla.to_excel(writer, index=False, sheet_name='Balance')
