@@ -21,7 +21,7 @@ st.title("Balance Financiero Proyectado")
 @st.cache_data
 def cargar_datos(archivo_subido):
     return pd.read_excel(archivo_subido, sheet_name=0, engine='openpyxl')
- def balance(df):     
+def balance(df):     
     # Convertimos la columna a fechas reales
     df['FECHA'] = pd.to_datetime(df['FECHA_CONEX'], format='%d/%m/%Y', errors='coerce')
     df['ID'] = df['SUCURSAL_CVE'].astype(str) + df['UNIDAD_OP_CVE'].astype(str) + df['FOLIO_DEF'].astype(str)
