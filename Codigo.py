@@ -15,7 +15,7 @@ st.set_page_config(
     layout="centered")
 
 
-st.image("logo.png", use_container_width=True)
+st.image("Logo2.png", use_container_width=True)
 
 
 st.title("Balance Financiero Proyectado")
@@ -38,7 +38,7 @@ if archivo is not None:
           df = cargar_datos(archivo)
         
           # 'datos' ya es un DataFrame, no necesitas hacer df = pd.DataFrame(datos)
-          df_m = datos.head(5)
+          df_m = df.head(5)
         
           st.success("¡Archivo cargado con éxito!")
           st.write(df_m)
